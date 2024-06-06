@@ -21,7 +21,7 @@ router.post("/courses", async (req: any, res: any) => {
 });
 // Fetching all data of one row using row id
 
-router.get("/courses/:id", async (req: any, res: any) => {
+router.get("/courses/:id", async (req: any, res: any) => { 
   const { id } = req.params;
   try {
     const newCourseFields = await pool.query(
@@ -38,21 +38,29 @@ router.get("/courses/:id", async (req: any, res: any) => {
 
 // Update course title
 
-router.post("/courses/:id", async (req: any, res: any) => {
+router.post("/courses/:id", async (req: any, res: any) => {  
   const { id } = req.params;
-  const { title } = req.body;
-
+  const { title, description, imageurl, price, ispublished, categoryid,createdat,updatedat } = req.body; 
+  console.log(req.body)
   try {
-    const updatedCourse = await pool.query(
-      "UPDATE course SET title = $1 WHERE id = $2 RETURNING *",
-      [title, id]
-    );
+    const courseValues = await pool.query("SELECT * FROM course WHERE id=$1", [id]);
+
+    const updatedcourse ={title: (title!=null? title:courseValues.rows[0].title), description: (description!=null? description:courseValues.rows[0].description ), imageurl: (imageurl!=null? imageurl:courseValues.rows[0].imageurl), price: (price!=null? price:courseValues.rows[0].price ), ispublished: (ispublished!=null? ispublished:courseValues.rows[0].ispublished ), categoryid: (categoryid!=null? categoryid:courseValues.rows[0].categoryid ),createdat: (createdat!=null? createdat:courseValues.rows[0].createdat ),updatedat: (updatedat!=null? updatedat:courseValues.rows[0].updatedat )}
+    
+   
+
+    const updatedCourse = await pool.query( 
+      "UPDATE course SET title = $1, description=$2, imageurl=$3, price=$4, ispublished=$5, categoryid=$6, createdat=$7, updatedat=$8 WHERE id = $9 RETURNING *",
+      [updatedcourse.title,updatedcourse.description, updatedcourse.imageurl, updatedcourse.price, updatedcourse.ispublished, updatedcourse.categoryid,updatedcourse.createdat,updatedcourse.updatedat, id] 
+    ); 
+
 
     res.json(updatedCourse.rows[0]);
   } catch (error) {
-    console.log(error);
+    console.log(error); 
   }
 });
+
 
 module.exports = router;
 export {};
