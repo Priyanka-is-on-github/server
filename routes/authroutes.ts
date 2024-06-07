@@ -32,7 +32,7 @@ router.get("/courses/:id", async (req: any, res: any) => {
     res.json(newCourseFields.rows[0]);
   } catch (error: any) {
     console.error(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error"); 
   }
 });
 
@@ -41,7 +41,7 @@ router.get("/courses/:id", async (req: any, res: any) => {
 router.post("/courses/:id", async (req: any, res: any) => {  
   const { id } = req.params;
   const { title, description, imageurl, price, ispublished, categoryid,createdat,updatedat } = req.body; 
-  console.log(req.body)
+  
   try {
     const courseValues = await pool.query("SELECT * FROM course WHERE id=$1", [id]);
 
@@ -60,6 +60,21 @@ router.post("/courses/:id", async (req: any, res: any) => {
     console.log(error); 
   }
 });
+
+
+router.get('/category', async (req:any, res:any)=>{
+  try {
+    const allCategory = await pool.query(" SELECT * FROM  category");
+    res.json(allCategory.rows);
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
+
+})
+
+
 
 
 module.exports = router;
