@@ -36,7 +36,7 @@ router.get("/courses/:id", async (req: any, res: any) => {
   }
 });
 
-// Update course title
+// Update course 
 
 router.post("/courses/:id", async (req: any, res: any) => {  
   const { id } = req.params;
@@ -64,7 +64,7 @@ router.post("/courses/:id", async (req: any, res: any) => {
 
 router.get('/category', async (req:any, res:any)=>{
   try {
-    const allCategory = await pool.query(" SELECT * FROM  category");
+    const allCategory = await pool.query(" SELECT * FROM  category ORDER BY name ASC");
     res.json(allCategory.rows);
     
   } catch (error) {

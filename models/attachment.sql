@@ -11,5 +11,4 @@ CREATE TABLE attachment(
             REFERENCES course(id)
 
 
-    
-);
+        );
