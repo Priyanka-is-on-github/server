@@ -1,7 +1,10 @@
+const USER = process.env.user;
+const PASSWORD = process.env.password;
+
 const Pool = require("pg").Pool;
 const pool = new Pool({
-  user: "postgres",
-  password: "priyanka@8886",
+  user: USER,
+  password: PASSWORD,
   host: "localhost",
   port: 5432,
   database: "edujourney_db",
