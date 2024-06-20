@@ -1,3 +1,8 @@
+// import dotenv from 'dotenv/config';
+require('dotenv').config();
+
+
+
 const USER = process.env.user;
 const PASSWORD = process.env.password;
 

@@ -1,4 +1,5 @@
-CREATE TABLE Course(id BIGSERIAL PRIMARY KEY,
+CREATE TABLE Course(
+id BIGSERIAL PRIMARY KEY,
 userid INT ,
 title VARCHAR(255) NOT NULL,
 description TEXT,
@@ -6,6 +7,7 @@ description TEXT,
  price NUMERIC(10,2),
  ispublished BOOLEAN,
 categoryid INT,
+
  createdat VARCHAR(255),
  updatedat VARCHAR(255) 
  
@@ -13,6 +15,5 @@ categoryid INT,
 -- CONSTRAINT fk_usermodel
 --     FOREIGN KEY(userid)
 --         REFERENCES userinfo(id),
--- CONSTRAINT fk_categorymodel
---     FOREIGN KEY(categoryid)
---         REFERENCES category(id)
+
+-

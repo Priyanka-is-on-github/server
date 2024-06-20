@@ -3,8 +3,8 @@ CREATE TABLE attachment(
     name VARCHAR(255),
     url TEXT,
     courseid INT NOT NULL,
-    createdat VARCHAR(255),
-    updatedat VARCHAR(255),
+    createdat TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updatedat TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
      CONSTRAINT fk_categorymodel
         FOREIGN KEY(courseid)

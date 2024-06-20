@@ -6,6 +6,7 @@ const pool = require("../db");
 // insert initial title of the course
 
 router.post("/courses", async (req: any, res: any) => {
+
   try {
     const { title } = req.body;
 
@@ -21,7 +22,7 @@ router.post("/courses", async (req: any, res: any) => {
 });
 // Fetching all data of one row using row id
 
-router.get("/courses/:id", async (req: any, res: any) => { 
+router.get("/courses/:id", async (req: any, res: any) => {
   const { id } = req.params;
   try {
     const newCourseFields = await pool.query(
@@ -54,7 +55,7 @@ router.post("/courses/:id", async (req: any, res: any) => {
       [updatedcourse.title,updatedcourse.description, updatedcourse.imageurl, updatedcourse.price, updatedcourse.ispublished, updatedcourse.categoryid,updatedcourse.createdat,updatedcourse.updatedat, id] 
     ); 
 
-
+console.log(updatedCourse.rows[0]);
     res.json(updatedCourse.rows[0]);
   } catch (error) {
     console.log(error); 
@@ -73,6 +74,8 @@ router.get('/category', async (req:any, res:any)=>{
   }
 
 })
+
+
 
 
 
