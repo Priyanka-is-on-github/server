@@ -5,7 +5,7 @@ const cors = require("cors");
 const router = require("./routes/auth-routes");
 const upload_router =require('./routes/file-upload-routes')
 const chapter_upload_router = require('./routes/chapter-upload-routes')
-
+const video_upload_router = require('./routes/video-upload-routes')
 
 
 
@@ -26,6 +26,7 @@ app.use("/api/v1/", router);
 
 app.use('/api/v1/courses',chapter_upload_router);
 
+app.use('/api/v1/videoupload', video_upload_router);
 
 
 

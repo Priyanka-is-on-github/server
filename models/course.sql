@@ -5,11 +5,11 @@ title VARCHAR(255) NOT NULL,
 description TEXT,
  imageurl TEXT,
  price NUMERIC(10,2),
- ispublished BOOLEAN,
+ ispublished BOOLEAN DEFAULT false,
 categoryid INT,
 
- createdat VARCHAR(255),
- updatedat VARCHAR(255) 
+createdat TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updatedat TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
  
 );
 -- CONSTRAINT fk_usermodel
