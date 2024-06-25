@@ -21,7 +21,7 @@ res.json(chapter.rows)
 
 router.get('/chapter/:id', async(req:any, res:any)=>{
 const {id} =req.params;
-const chapter = await pool.query('SELECT * FROM chapters WHERE courseid=$1 ',[id])
+const chapter = await pool.query('SELECT * FROM chapters WHERE courseid=$1 ORDER BY position ASC',[id])
 res.json(chapter.rows)
 
 })
@@ -76,6 +76,28 @@ router.delete('/chapterdetail/:chapterid', async (req:any, res:any)=>{
 //     const {chapterid} = req.params;
 //     await pool.query('UPDATE chapters SET ispublished=$1 WHERE id=$1 RETURNING *',[chapterid])
 // })
+
+
+router.put('/chapters/reorder', async (req:any, res:any) => {
+    const reorderedChapters = req.body;
+  
+    try {
+      const updatePromises = reorderedChapters.map((reorderedChapter:{id:string,position:string}) => {
+        return pool.query(
+          'UPDATE chapters SET position=$1 WHERE id=$2',
+          [reorderedChapter.position, reorderedChapter.id]
+        );
+      });
+  
+      // Wait for all update queries to complete
+      await Promise.all(updatePromises);
+  
+      res.json({ message: 'Chapters reordered' });
+    } catch (error:any) {
+      console.error('Error reordering chapters:', error);
+      res.status(500).json({ message: 'Error reordering chapters', error: error.message });
+    }
+  });
 
 
 

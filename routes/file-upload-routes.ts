@@ -8,7 +8,7 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const CLOUD_NAME = process.env.cloud_name;
 const API_KEY = process.env.api_key;
-const API_SECRET = process.env.api_secret;
+const API_SECRET = process.env.api_secret; 
 
 cloudinary.config({ 
     cloud_name: CLOUD_NAME, 
@@ -86,7 +86,7 @@ router.post('/courseImage', upload.single("file"), async (req:any, res:any)=>{
     const imageurl = await pool.query("UPDATE course SET imageurl=$1 WHERE id=$2 RETURNING*", [uploadResponse.url, courseId]);
       res.json(imageurl.rows[0])
    
-    console.log(imageurl)
+ 
     } catch (error) {
       console.log(error)
     }
@@ -95,16 +95,12 @@ router.post('/courseImage', upload.single("file"), async (req:any, res:any)=>{
 
 router.post('/courseAttachment', fileUpload.single("url"), async (req:any, res:any)=>{
 
-
-
-  
   const file= req.file ;
   const {courseId} = req.query;
  
-
-  try {
+ try {
    
-      await pool.query("INSERT INTO attachment(name, url, courseid) VALUES($1, $2, $3)", [file.originalname, file.path, courseId]);
+      await pool.query("INSERT INTO attachment(name, url, courseid) VALUES($1, $2, $3)", [file.originalname, file.path, courseId]); 
       const fileUrl = await pool.query("SELECT * FROM attachment WHERE courseid=$1 ORDER BY createdat DESC ",[courseId])
     res.json(fileUrl.rows);
     

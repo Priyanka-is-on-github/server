@@ -87,6 +87,14 @@ router.get('/courses',async(req:any, res:any)=>{
   
 })
 
+// router.get('/courses', async()=>{
+//   try {
+//     const courses = await pool.query('SELECT * FROM course ORDER BY ')
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
+
 
 
 

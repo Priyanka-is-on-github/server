@@ -6,9 +6,9 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const  cloudinary= require( 'cloudinary').v2;
 import Mux from '@mux/mux-node';
 
-const CLOUD_NAME = process.env.cloud_name;
+const CLOUD_NAME = process.env.cloud_name; 
 const API_KEY = process.env.api_key;
-const API_SECRET = process.env.api_secret;
+const API_SECRET = process.env.api_secret;  
 
 cloudinary.config({ 
     cloud_name: CLOUD_NAME, 
@@ -26,7 +26,7 @@ const Storage = new CloudinaryStorage({
   params: async (req:any, file:any) => {
     let folder;
     switch (file.mimetype) {
-      
+     
       case 'video/mp4':
       case 'video/avi':
       case 'video/mkv':
@@ -60,22 +60,15 @@ router.post('/chapterVideo/:chapterid', upload.single('videourl'), async (req:an
 
   const {chapterid} = req.params;
   const video = req.file ;
-// console.log(req);
 
-
-
-
-
- // const asset = await mux.video.assets.create({
-  //   input: [{ url: 'https://muxed.s3.amazonaws.com/leds.mp4' }],
-  //   playback_policy: ['public'],
-  //   encoding_tier: 'baseline',
-  // });
-
-
+const asset = await mux.video.assets.create({
+    input: [{ url: video.path }],
+    playback_policy: ['public'],
+    encoding_tier: 'baseline',
+  });
 
 })
 
 
 module.exports = router;
-
+export {}
