@@ -5,6 +5,8 @@ const multer = require('multer')
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const  cloudinary= require( 'cloudinary').v2;
 import Mux from '@mux/mux-node';
+const pool = require("../db");
+require('dotenv').config();
 
 const CLOUD_NAME = process.env.cloud_name; 
 const API_KEY = process.env.api_key;
@@ -56,18 +58,27 @@ const upload = multer({
 });
 
 
-router.post('/chapterVideo/:chapterid', upload.single('videourl'), async (req:any, res:any) => {
+// router.post('/chapterVideo/:chapterid', upload.single('videourl'), async (req:any, res:any) => {
 
-  const {chapterid} = req.params;
-  const video = req.file ;
+//   const {chapterid} = req.params;
+//   const video = req.file ;
 
-const asset = await mux.video.assets.create({
-    input: [{ url: video.path }],
-    playback_policy: ['public'],
-    encoding_tier: 'baseline',
-  });
+//   const videoUrl = await pool.query("UPDATE chapters SET videourl=$1 WHERE id=$2 RETURNING *",[video.path, chapterid]);
 
-})
+// const asset = await mux.video.assets.create({
+//     input: [{ url: video.path }],
+//     playback_policy: ['public'],
+//     encoding_tier: 'baseline',
+//   });
+
+//   const muxData = await pool.query(
+//     "INSERT INTO muxdata (assetid, playbackid, chapterid) VALUES ($1, $2, $3) RETURNING *",
+//     [asset.id, asset.playback_ids?.[0].id, chapterid]
+//   );
+// //  res.json(videoUrl.rows[0])
+// console.log('v=',videoUrl.rows[0])
+// console.log('a=',asset)
+// })
 
 
 module.exports = router;

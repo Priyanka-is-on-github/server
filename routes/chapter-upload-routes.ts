@@ -28,8 +28,8 @@ res.json(chapter.rows)
 
 router.get('/chapterdetail/:chapterid',  async(req:any, res:any)=>{
    
-    const {chapterid} = req.params;
-
+    let {chapterid} = req.params;
+    chapterid = parseInt(chapterid)
     try {
         const chapterDetail = await pool.query('SELECT title, description, videourl, isfree, ispublished FROM chapters WHERE id=$1', [chapterid]);
        
@@ -43,9 +43,10 @@ router.get('/chapterdetail/:chapterid',  async(req:any, res:any)=>{
 
 
 router.post('/chapterdetail/:chapterid', async (req:any, res:any)=>{
-    const {chapterid} = req.params;
+    let {chapterid} = req.params;
     const {title, description, videourl, isfree} = req.body;
-
+    chapterid = parseInt(chapterid)
+ 
    
     try {
         const prevChapterDetail = await pool.query('SELECT title, description, videourl, isfree FROM chapters WHERE id=$1',[chapterid])
@@ -66,21 +67,27 @@ router.post('/chapterdetail/:chapterid', async (req:any, res:any)=>{
 })
 
 router.delete('/chapterdetail/:chapterid', async (req:any, res:any)=>{
-    const {chapterid} = req.params;
-
+    let {chapterid} = req.params;
+    chapterid = parseInt(chapterid)
+   
     await pool.query('DELETE FROM chapters WHERE id=$1 RETURNING *',[chapterid]);
    res.json({msg: 'Chapter Deleted'})
 })
 
-// router.put('/chapterdetail/:chapterid', async(req:any, res:any)=>{
-//     const {chapterid} = req.params;
-//     await pool.query('UPDATE chapters SET ispublished=$1 WHERE id=$1 RETURNING *',[chapterid])
-// })
+router.put('/chapterdetail', async(req:any, res:any)=>{ 
+  
+    const {chapterId, ispublish} = req.query; 
+    console.log(ispublish)
+    
+    const response =await pool.query('UPDATE chapters SET ispublished=$1 WHERE id=$2 RETURNING *',[ispublish,chapterId]) 
+    res.json({mesg: 'chapter publish'})
+    console.log(response.rows[0])
+})
 
 
 router.put('/chapters/reorder', async (req:any, res:any) => {
     const reorderedChapters = req.body;
-  
+   
     try {
       const updatePromises = reorderedChapters.map((reorderedChapter:{id:string,position:string}) => {
         return pool.query(

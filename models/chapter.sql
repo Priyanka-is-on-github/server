@@ -6,7 +6,7 @@ CREATE TABLE  IF NOT EXISTS chapters(
     position INT,
     ispublished BOOLEAN DEFAULT false,
     isfree BOOLEAN DEFAULT false,
-    muxdata muxdata?
+    muxdata INT,  
     courseid INT NOT NULL,
     userprogress userprogress[]
     createdat TIMESTAMPTZ DEFAULT NOW(),
@@ -19,33 +19,17 @@ CREATE TABLE  IF NOT EXISTS chapters(
 
     CREATE TABLE IF NOT EXISTS muxdata(
         id BIGSERIAL PRIMARY KEY,
-        assetid  INT NOT NULL
-        playbackid INT
+        assetid  TEXT ,
+        playbackid TEXT ,
 
         chapterid INT NOT NULL,
+        
         CONSTRAINT fk_muxdatamodel
             FOREIGN KEY(chapterid)
                 REFERENCES chapters(id) ON DELETE CASCADE
     )
 
-    CREATE TABLE IF NOT EXISTS userprogress(
-        id BIGSERIAL PRIMARY KEY,
-        userid INT NOT NULL,
-
-        chapterid INT NOT NULL,
-        
-        CONSTRAINT fk_userprogress
-            FOREIGN KEY(chapterid)
-                REFERENCES chapters(id) ON DELETE CASCADE
-
-
-        iscompleted BOOLEAN DEFAULT false,
-         createdat TIMESTAMPTZ DEFAULT NOW(),
-            updatedat TIMESTAMPTZ DEFAULT NOW(),
-
-            @@unique(userid, chapterid)
-            @@index([chapterid])
-    )
+    
 
 
     CREATE TABLE IF NOT EXISTS purchase(
