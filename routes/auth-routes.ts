@@ -87,18 +87,12 @@ router.get('/courses',async(req:any, res:any)=>{
   
 })
 
-// router.get('/courses', async()=>{
-//   try {
-//     const courses = await pool.query('SELECT * FROM course ORDER BY ')
-//   } catch (error) {
-//     console.log(error)
-//   }
-// })
 router.delete('/courses/:id', async (req:any, res:any)=>{
   const {id} = req.params;
 
  
   await pool.query('DELETE FROM course WHERE id=$1 RETURNING *',[id]);
+  await pool.query("DELETE FROM chapters WHERE courseid=$1 RETURNING *", [id])
  res.json({msg: 'Course Deleted'})
 })
 
@@ -106,11 +100,19 @@ router.put('/courses', async(req:any, res:any)=>{
   
   const {Id, ispublish} = req.query; 
  
-  
-  const response =await pool.query('UPDATE course SET ispublished=$1 WHERE id=$2 RETURNING *',[ispublish,Id]) 
+  try {
+    const response =await pool.query('UPDATE course SET ispublished=$1 WHERE id=$2 RETURNING *',[ispublish,Id]) 
   res.json({mesg: 'course publish'})
-  // console.log(response.rows[0])
+  } catch (error) {
+    console.log(error)
+  }
+  
+ 
 })
+
+
+
+
 
 
 module.exports = router;

@@ -15,7 +15,7 @@ const API_SECRET = process.env.api_secret;
 cloudinary.config({ 
     cloud_name: CLOUD_NAME, 
     api_key: API_KEY, 
-    api_secret: API_SECRET, // Click 'View Credentials' below to copy your API secret
+    api_secret: API_SECRET, 
 });
 
 const mux = new Mux({
@@ -58,27 +58,75 @@ const upload = multer({
 });
 
 
-// router.post('/chapterVideo/:chapterid', upload.single('videourl'), async (req:any, res:any) => {
+router.post('/chapterVideo/:chapterid', upload.single('videourl'), async (req:any, res:any) => {
 
-//   const {chapterid} = req.params;
-//   const video = req.file ;
+  const {chapterid} = req.params;
+  const video = req.file ;
 
-//   const videoUrl = await pool.query("UPDATE chapters SET videourl=$1 WHERE id=$2 RETURNING *",[video.path, chapterid]);
 
-// const asset = await mux.video.assets.create({
-//     input: [{ url: video.path }],
-//     playback_policy: ['public'],
-//     encoding_tier: 'baseline',
-//   });
+  try {
+    const videoUrl = await pool.query("UPDATE chapters SET videourl=$1 WHERE id=$2 RETURNING *",[video.path, chapterid]);
 
-//   const muxData = await pool.query(
-//     "INSERT INTO muxdata (assetid, playbackid, chapterid) VALUES ($1, $2, $3) RETURNING *",
-//     [asset.id, asset.playback_ids?.[0].id, chapterid]
-//   );
-// //  res.json(videoUrl.rows[0])
-// console.log('v=',videoUrl.rows[0])
-// console.log('a=',asset)
-// })
+
+    const asset = await mux.video.assets.create({
+        input: [{ url: video.path }],
+        playback_policy: ['public'],
+        encoding_tier: 'baseline',
+      });
+
+      const hasplaybackId = await pool.query('SELECT * FROM muxdata WHERE chapterid=$1',[chapterid])
+      
+
+      if(hasplaybackId.rows.length != 0)
+      {
+          await pool.query("DELETE FROM muxdata WHERE chapterid=$1 ", [chapterid])
+       
+      }
+    
+      await pool.query(
+        "INSERT INTO muxdata (assetid, playbackid, chapterid) VALUES ($1, $2, $3) RETURNING *",
+        [asset.id, asset.playback_ids?.[0].id, chapterid]
+      );
+    
+    res.json({
+        videoUrl: videoUrl.rows[0],
+        playbackId: asset.playback_ids?.[0].id
+      });
+    
+  
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
+
+ 
+})
+
+router.get('/chapterVideo/:chapterid', async( req:any, res:any)=>{
+
+
+const {chapterid} = req.params;
+
+try {
+  
+const videoUrl= await pool.query("SELECT videourl FROM chapters WHERE id=$1",[chapterid])
+
+const playbackId =await pool.query("SELECT playbackid FROM muxdata WHERE chapterid=$1",[chapterid])
+
+
+
+
+res.json({
+  videoUrl: videoUrl.rows[0].videourl,
+  playbackId: playbackId.rows[0].playbackid,
+});
+
+
+} catch (error) {
+  console.log(error)
+}
+
+})
+
 
 
 module.exports = router;

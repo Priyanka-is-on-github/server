@@ -66,22 +66,62 @@ router.post('/chapterdetail/:chapterid', async (req:any, res:any)=>{
 
 })
 
-router.delete('/chapterdetail/:chapterid', async (req:any, res:any)=>{
-    let {chapterid} = req.params;
-    chapterid = parseInt(chapterid)
+
+
+router.delete('/chapterdelete/:chapterid', async (req:any, res:any)=>{ 
+  const {chapterid} = req.params;
+const {courseid} = req.body;
+
+  try {
+  await pool.query('DELETE FROM chapters WHERE id=$1 RETURNING *',[chapterid]);
+   const publishedChapters= await pool.query("SELECT ispublished FROM chapters WHERE courseid=$1", [courseid]) 
+   const hasPublishedChapters = publishedChapters.rows.some((chapter: { ispublished: boolean }) => chapter.ispublished);
+
+
+   if (!hasPublishedChapters) {
+    await pool.query('UPDATE course SET ispublished = false WHERE id = $1', [courseid]);
+  }
+
+  res.status(200).json({ message: 'Chapter deleted successfully' });
+} catch (error) {
+  
+  res.status(500).json({ message: 'Internal server error' });
+}
    
-    await pool.query('DELETE FROM chapters WHERE id=$1 RETURNING *',[chapterid]);
-   res.json({msg: 'Chapter Deleted'})
 })
+
+
+
 
 router.put('/chapterdetail', async(req:any, res:any)=>{ 
   
-    const {chapterId, ispublish} = req.query; 
-    console.log(ispublish)
+    const {chapterId, ispublish, courseId} = req.query; 
+   
+   
+    try {
+
+      await pool.query('UPDATE chapters SET ispublished=$1 WHERE id=$2 RETURNING *',[ispublish,chapterId]) 
+
+      const publishedChapters= await pool.query("SELECT ispublished FROM chapters WHERE courseid=$1", [courseId]) 
+      const hasPublishedChapters = publishedChapters.rows.some((chapter: { ispublished: boolean }) => chapter.ispublished);
+
+      
+   if (!hasPublishedChapters) {
+    await pool.query('UPDATE course SET ispublished = false WHERE id = $1', [courseId]);
+  }
+
+
+
+  res.status(200).json({ message: 'Chapter updated successfully' });
+
+  
+
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+      
+    }
     
-    const response =await pool.query('UPDATE chapters SET ispublished=$1 WHERE id=$2 RETURNING *',[ispublish,chapterId]) 
-    res.json({mesg: 'chapter publish'})
-    console.log(response.rows[0])
+    
 })
 
 
