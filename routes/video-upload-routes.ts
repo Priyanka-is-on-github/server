@@ -116,8 +116,8 @@ const playbackId =await pool.query("SELECT playbackid FROM muxdata WHERE chapter
 
 
 res.json({
-  videoUrl: videoUrl.rows[0].videourl,
-  playbackId: playbackId.rows[0].playbackid,
+  videoUrl: videoUrl?.rows[0]?.videourl,
+  playbackId: playbackId?.rows[0]?.playbackid,
 });
 
 

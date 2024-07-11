@@ -112,11 +112,16 @@ router.post('/courseAttachment', fileUpload.single("url"), async (req:any, res:a
   }
   
 })
+
+
 router.get('/courseAttachment', async (req:any, res:any )=>{
   const {courseId} = req.query;
   const fileUrl = await pool.query("SELECT * FROM attachment WHERE courseid=$1 ORDER BY createdat DESC ",[courseId])
   res.json(fileUrl.rows)
 })
+
+
+
 
 router.delete('/courseAttachmentDelete', async(req:any, res:any)=>{
   
