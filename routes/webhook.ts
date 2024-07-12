@@ -10,6 +10,8 @@ const bodyParser = require('body-parser');
 
 // Use the raw body parser to handle the webhook request
 router.post('/webhookRoute', bodyParser.raw({ type: 'application/json' }), async (req:any, res:any) => { 
+  console.log("webhook called");
+  
   const sig = req.headers['stripe-signature'];
   let event;
 

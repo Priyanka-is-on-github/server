@@ -3,14 +3,11 @@ CREATE TABLE category(
     name VARCHAR(255)
 
 
-     CONSTRAINT fk_categorymodel
-       FOREIGN KEY(categoryid)
-         REFERENCES category(id)
-   
+    
 );
 
 
    
     
 
-    -
+    

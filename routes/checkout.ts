@@ -11,8 +11,14 @@ async function currentUser(req: any) {
 }
 
 router.post("/checkout/:courseId", async (req: any, res: any) => {
-  const { courseId } = req.params;
+  let { courseId } = req.params;
   const { authorization } = req.headers;
+  // let {courseId} =req.query;
+  let {chapterId}=req.body;
+  console.log("chapter dets",courseId,chapterId);
+  // courseId=parseInt(courseId);
+  // chapterId=parseInt(chapterId);
+  
 
   if (!authorization) {
     return res
@@ -34,7 +40,7 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
     const userid = decoded.sub;
     console.log("userid=", userid);
 
-    const user = await currentUser(req); // Assuming you have a currentUser function
+    const user = await currentUser({id:userid,emailAddress:[{}]}); // Assuming you have a currentUser function
 
     if (
       !userid ||
@@ -75,7 +81,7 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
             name: course.title,
             description: course.description,
           },
-          unit_amount: Math.max(Math.round(course.price), 50),
+          unit_amount: Math.max(Math.round(course.price*100), 50),
         },
       },
     ];
@@ -102,13 +108,14 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
       customer: stripeCustomer.stripe_customer_id,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}?success=1`,
-      cancel_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}?canceled=1`,
+      success_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}/chapters/${chapterId}?success=1`,
+      cancel_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}/chapters/${chapterId}?canceled=1`,
       metadata: {
         courseId: course.id,
-        userId: user.id,
+        userId: userid,
       },
     });
+    console.log("session from checkout",session);
     
 
     res.json({ url: session.url }); 

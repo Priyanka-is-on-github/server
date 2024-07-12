@@ -8,7 +8,7 @@ CREATE TABLE  IF NOT EXISTS chapters(
     isfree BOOLEAN DEFAULT false,
     muxdata INT,  
     courseid INT NOT NULL,
-    userprogress userprogress[]
+    -- userprogress userprogress[],
     createdat TIMESTAMPTZ DEFAULT NOW(),
     updatedat TIMESTAMPTZ DEFAULT NOW(),
     
@@ -27,7 +27,7 @@ CREATE TABLE  IF NOT EXISTS chapters(
         CONSTRAINT fk_muxdatamodel
             FOREIGN KEY(chapterid)
                 REFERENCES chapters(id) ON DELETE CASCADE
-    )
+    );
 
     
 
@@ -37,13 +37,12 @@ CREATE TABLE  IF NOT EXISTS chapters(
         userid INT NOT NULL,
 
         courseid INT NOT NULL,
-        CONSTRAINT fk_purchase
+        createdat TIMESTAMPTZ DEFAULT NOW(),
+            updatedat TIMESTAMPTZ DEFAULT NOW(),
+            CONSTRAINT fk_purchase
             FOREIGN KEY(courseid)
                 REFERENCES course(id) ON DELETE CASCADE
-
-         createdat TIMESTAMPTZ DEFAULT NOW(),
-            updatedat TIMESTAMPTZ DEFAULT NOW(),
-    )
+    );
 
 CREATE TABLE IF NOT EXISTS stripecustomer(
     id BIGSERIAL PRIMARY KEY,
@@ -51,7 +50,7 @@ CREATE TABLE IF NOT EXISTS stripecustomer(
     stripecustomerid INT NOT NULL,
 
      createdat TIMESTAMPTZ DEFAULT NOW(),
-            updatedat TIMESTAMPTZ DEFAULT NOW(),
-)
+            updatedat TIMESTAMPTZ DEFAULT NOW()
+);
 
 
