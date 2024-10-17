@@ -6,7 +6,9 @@ const pool =  require('../db');
 
 router.get('/publishedcourses', async(req:any, res:any)=>{
     try {
+      
       const courses = await pool.query('SELECT * FROM course WHERE ispublished=true ORDER BY createdat DESC')
+     
       res.json( courses.rows)
 
     } catch (error) {
@@ -14,13 +16,9 @@ router.get('/publishedcourses', async(req:any, res:any)=>{
     }
   })
 
-
-
-  router.get('/publishedchapters/:id', async(req:any, res:any)=>{
+ router.get('/publishedchapters/:id', async(req:any, res:any)=>{
     const {id}= req.params;
   
-    
-
     try {
       const publishedChapters = await pool.query('SELECT * FROM chapters WHERE courseid=$1 AND ispublished=true ORDER BY position ASC',[id])
       if (publishedChapters.rows.length === 0) {

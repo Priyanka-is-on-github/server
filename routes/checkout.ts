@@ -7,12 +7,13 @@ const jwt = require("jsonwebtoken");
 const { JwtPayload } = require("jsonwebtoken");
 
 async function currentUser(req: any) {
-  return { id: 1, emailAddresses: [{ emailAddress: "user@example.com" }] };
+  return { id: 1, emailAddresses: [{ emailAddress: "user@example.com" }] };  
 }
 
 router.post("/checkout/:courseId", async (req: any, res: any) => {
   let { courseId } = req.params;
   const { authorization } = req.headers;
+  
   // let {courseId} =req.query;
   let {chapterId}=req.body;
   console.log("chapter dets",courseId,chapterId);
@@ -42,6 +43,7 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
 
     const user = await currentUser({id:userid,emailAddress:[{}]}); // Assuming you have a currentUser function
 
+    console.log('user=', user)
     if (
       !userid ||
       !user ||
@@ -52,13 +54,13 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
     }
 
     const courseResult = await pool.query(
-      "SELECT * FROM course WHERE id = $1 AND ispublished = true",
+      "SELECT * FROM course WHERE id = $1 AND ispublished = true",  
       [courseId]
     );
 
     const course = courseResult.rows[0];
 
-    if (!course) {
+    if (!course) { 
       return res.status(404).send("Not found");
     }
 
@@ -90,7 +92,7 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
       "SELECT stripe_customer_id FROM stripe_customer WHERE userid = $1",
       [userid]
     );
-    let stripeCustomer = stripeCustomerResult.rows[0];
+    let stripeCustomer = stripeCustomerResult.rows[0]
 
     if (!stripeCustomer) {
       const customer = await stripe.customers.create({
@@ -108,7 +110,7 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
       customer: stripeCustomer.stripe_customer_id,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}/chapters/${chapterId}?success=1`,
+      success_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}/chapters/${chapterId}?success=1`, 
       cancel_url: `${process.env.PUBLIC_APP_URL}/courses/${course.id}/chapters/${chapterId}?canceled=1`,
       metadata: {
         courseId: course.id,
@@ -121,7 +123,7 @@ router.post("/checkout/:courseId", async (req: any, res: any) => {
     res.json({ url: session.url }); 
   } catch (error) {
     console.error("[COURSE_ID_CHECKOUT]", error);
-    res.status(500).send("Internal Error");
+    res.status(500).send("Internal Error");   
   }
 });
 

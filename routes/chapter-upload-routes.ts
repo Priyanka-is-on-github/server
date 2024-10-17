@@ -11,7 +11,7 @@ try {
     await pool.query('INSERT INTO chapters(title, position, courseid) VALUES($1,$2,$3) RETURNING *',[title,count, id])
     const chapter = await pool.query('SELECT * FROM chapters WHERE courseid=$1',[id])
    
-res.json(chapter.rows)
+res.status(201).json(chapter.rows)
 } catch (error) {
     console.log(error)
 }
@@ -41,6 +41,44 @@ router.get('/chapterdetail/:chapterid',  async(req:any, res:any)=>{
 
 })
 
+router.get('/next-chapter/:chapterId/:id', async (req: any, res: any) => {
+  const { id, chapterId } = req.params;
+
+ 
+  try {
+    // Get the current chapter's position
+    const currentChapter = await pool.query(
+      'SELECT position FROM chapters WHERE id = $1 AND courseid = $2',
+      [chapterId, id]
+    );
+
+    if (currentChapter.rows.length === 0) {
+      return res.status(404).json({ error: 'Chapter not found' });
+    }
+
+    const currentPosition = currentChapter.rows[0].position;
+
+    // Find the next published chapter with a greater position
+    const nextChapter = await pool.query(
+      'SELECT * FROM chapters WHERE courseid = $1 AND ispublished = true AND position > $2 ORDER BY position ASC LIMIT 1',
+      [id, currentPosition]
+    );
+
+    if (nextChapter.rows.length === 0) {
+      return res.json(null)
+    }
+
+   
+     res.json(nextChapter.rows[0].id);
+  } catch (error) {
+    console.error('Error fetching next chapter:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
 
 router.post('/chapterdetail/:chapterid', async (req:any, res:any)=>{
     let {chapterid} = req.params;
@@ -58,7 +96,7 @@ router.post('/chapterdetail/:chapterid', async (req:any, res:any)=>{
 
 
 
-        res.json(updatedChapterDetail.rows[0])
+        res.status(201).json(updatedChapterDetail.rows[0])
     } catch (error) {
         console.log(error)
     }
@@ -112,7 +150,7 @@ router.put('/chapterdetail', async(req:any, res:any)=>{
 
 
 
-  res.status(200).json({ message: 'Chapter updated successfully' });
+  res.status(201).json({ message: 'Chapter updated successfully' });
 
   
 
@@ -139,7 +177,7 @@ router.put('/chapters/reorder', async (req:any, res:any) => {
       // Wait for all update queries to complete
       await Promise.all(updatePromises);
   
-      res.json({ message: 'Chapters reordered' });
+      res.status(201).json({ message: 'Chapters reordered' });
     } catch (error:any) {
       console.error('Error reordering chapters:', error);
       res.status(500).json({ message: 'Error reordering chapters', error: error.message });

@@ -7,14 +7,16 @@ const pool = require("../db");
 
 router.post("/courses", async (req: any, res: any) => {
   try {
-    const { title } = req.body;
+    const { title} = req.body.values;
+    const {userId} = req.body;
+ 
 
     const newCourse = await pool.query(
-      "INSERT INTO course(title) VALUES($1) RETURNING *",
-      [title]
+      "INSERT INTO course(teacherid,title ) VALUES($1, $2) RETURNING *",
+      [userId,title]
     );
 
-    res.json(newCourse.rows[0]);
+    res.status(201).json(newCourse.rows[0]);
   } catch (error) {
     console.log(error);
   }
@@ -40,7 +42,9 @@ router.get("/courses/:id", async (req: any, res: any) => {
 
 router.post("/courses/:id", async (req: any, res: any) => { 
   const { id } = req.params;
+
   const {
+  
     title,
     description,
     imageurl,
@@ -86,7 +90,7 @@ router.post("/courses/:id", async (req: any, res: any) => {
     );
 
     console.log(updatedCourse.rows[0]);
-    res.json(updatedCourse.rows[0]);
+    res.status(201).json(updatedCourse.rows[0]);
   } catch (error) {
     console.log(error);
   }
@@ -115,6 +119,18 @@ router.get("/courses", async (req: any, res: any) => {
   }
 });
 
+router.get('/getCourses', async(req:any, res:any)=>{
+  const {categoryTitle} = req.query;
+try {
+  const courses = await pool.query('SELECT * FROM course WHERE ispublished = true AND categoryid = $1', [categoryTitle])
+ res.json(courses.rows)
+} catch (error) {
+  console.log(error)
+}
+
+ 
+})
+
 router.delete("/courses/:id", async (req: any, res: any) => {
   const { id } = req.params;
 
@@ -131,7 +147,7 @@ router.put("/courses", async (req: any, res: any) => {
       "UPDATE course SET ispublished=$1 WHERE id=$2 RETURNING *",
       [ispublish, Id]
     );
-    res.json({ mesg: "course publish" });
+    res.status(201).json({ mesg: "course publish" });
   } catch (error) {
     console.log(error);
   }
