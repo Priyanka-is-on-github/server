@@ -15,7 +15,7 @@ const get_analytics_router = require('./routes/get-analytics')
 // const authMiddleware = require('./middleware/authMiddleware')
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 
 // Middleware
@@ -56,8 +56,4 @@ app.use('/api/v1/webhook', webhookRouter);
 
 
 
-
-app.listen(PORT, () => {
-  console.log("Server is running at port:", PORT);
-});
-
+app.listen(PORT, () => console.log(`Server running on ${PORT}, http://localhost:${PORT}`));
