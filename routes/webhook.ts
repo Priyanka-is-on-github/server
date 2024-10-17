@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const stripe = require("stripe");
-const bodyParser = require("body-parser");
+
 
 // Use the raw body parser to handle the webhook request
 router.post("/webhookRoute", async (req: any, res: any) => {
