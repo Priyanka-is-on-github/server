@@ -53,6 +53,10 @@ app.use('/api/v1/getanalytics', get_analytics_router)
 
 app.use('/api/v1/webhook', webhookRouter);
 
+app.get("/health",async(req:any,res:any)=>{
+  res.json("hi from priyanka");
+})
+
 
 
 
