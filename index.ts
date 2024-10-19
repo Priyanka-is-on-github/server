@@ -12,11 +12,15 @@ const webhookRouter = require('./routes/webhook')
 const get_purchase_router = require('./routes/get-purchase')
 const get_progress_router = require('./routes/get-progress')
 const get_analytics_router = require('./routes/get-analytics')
-// const authMiddleware = require('./middleware/authMiddleware')
+const table = require('./dbmigration');
+
 
 
 const PORT = process.env.PORT || 3001;
 
+// database creation
+
+table()
 
 // Middleware
 app.use(cors());
