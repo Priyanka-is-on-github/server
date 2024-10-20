@@ -4,7 +4,7 @@ const pool = require("./db");
 async function table(){
 
    
-await pool.query(`CREATE TABLE course(
+await pool.query(`CREATE TABLE IF NOT EXISTS course(
     id BIGSERIAL PRIMARY KEY,
     teacherid VARCHAR(255) ,
     title VARCHAR(255) NOT NULL,
@@ -71,7 +71,7 @@ await pool.query(`    CREATE TABLE IF NOT EXISTS purchase(
             REFERENCES course(id) ON DELETE CASCADE
 );`)
 
-await pool.query(`CREATE TABLE attachment(
+await pool.query(`CREATE TABLE IF NOT EXISTS attachment(
     id BIGSERIAL NOT NULL,
     name VARCHAR(255),
     url TEXT,
@@ -86,7 +86,7 @@ await pool.query(`CREATE TABLE attachment(
 
         )`)
 
-        await pool.query(`CREATE TABLE category(
+        await pool.query(`CREATE TABLE IF NOT EXISTS category(
 id BIGSERIAL NOT NULL, 
 name VARCHAR(255)
 
@@ -94,7 +94,7 @@ name VARCHAR(255)
 
 );`)
 
-await pool.query(`    CREATE TABLE IF NOT EXISTS userprogress (
+await pool.query(`CREATE TABLE IF NOT EXISTS userprogress (
     id BIGSERIAL PRIMARY KEY,
     userid VARCHAR(255),
     chapterid INT NOT NULL,
