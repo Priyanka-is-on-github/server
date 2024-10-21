@@ -61,7 +61,7 @@ await pool.query(`CREATE TABLE  IF NOT EXISTS chapters(
     
 await pool.query(`    CREATE TABLE IF NOT EXISTS purchase(
     id BIGSERIAL PRIMARY KEY,
-    userid INT NOT NULL,
+    userid varchar(255) NOT NULL,
 
     courseid INT NOT NULL,
     createdat TIMESTAMPTZ DEFAULT NOW(),
@@ -107,16 +107,16 @@ await pool.query(`CREATE TABLE IF NOT EXISTS userprogress (
 );
 `)
 
-await pool.query(`CREATE TABLE IF NOT EXISTS purchase(
-    id BIGSERIAL PRIMARY KEY,
-    userid  VARCHAR(255),
-    courseid INT,
-    createdat TIMESTAMPTZ DEFAULT NOW(),
-    updatedat TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT fk_purchase FOREIGN KEY(courseid) REFERENCES course(id) ON DELETE CASCADE
+// await pool.query(`CREATE TABLE IF NOT EXISTS purchase(
+//     id BIGSERIAL PRIMARY KEY,
+//     userid  VARCHAR(255),
+//     courseid INT,
+//     createdat TIMESTAMPTZ DEFAULT NOW(),
+//     updatedat TIMESTAMPTZ DEFAULT NOW(),
+//     CONSTRAINT fk_purchase FOREIGN KEY(courseid) REFERENCES course(id) ON DELETE CASCADE
 
 
-);`)
+// );`)
 
 await pool.query(`CREATE TABLE IF NOT EXISTS stripe_customer(
     id BIGSERIAL PRIMARY KEY,
