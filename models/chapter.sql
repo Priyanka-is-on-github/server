@@ -34,7 +34,7 @@ CREATE TABLE  IF NOT EXISTS chapters(
 
     CREATE TABLE IF NOT EXISTS purchase(
         id BIGSERIAL PRIMARY KEY,
-        userid INT NOT NULL,
+        userid VARCHAR(255) NOT NULL,
 
         courseid INT NOT NULL,
         createdat TIMESTAMPTZ DEFAULT NOW(),
@@ -46,8 +46,8 @@ CREATE TABLE  IF NOT EXISTS chapters(
 
 CREATE TABLE IF NOT EXISTS stripecustomer(
     id BIGSERIAL PRIMARY KEY,
-    userid INT NOT NULL,
-    stripecustomerid INT NOT NULL,
+    userid VARCHAR(255) NOT NULL,
+    stripecustomerid VARCHAR(255) NOT NULL,
 
      createdat TIMESTAMPTZ DEFAULT NOW(),
             updatedat TIMESTAMPTZ DEFAULT NOW()
