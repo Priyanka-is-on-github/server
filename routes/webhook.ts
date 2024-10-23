@@ -9,6 +9,7 @@ router.post("/webhookRoute", async (req: any, res: any) => {
   console.log("webhook called");
 
   const sig = req.headers["stripe-signature"];
+  console.log('sig=',sig)
   let event;
 
   try {
